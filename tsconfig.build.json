@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es5"
+  },
+  "exclude": ["src/setupTests.ts", "src/**/*.test.tsx", "src/**/*.test.ts"],
+  "include": ["src/**/*"]
+}
