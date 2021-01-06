@@ -17,8 +17,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
-
-    "no-console": "error",
+    "no-console": "warn",
     "sort-imports": [
       "error",
       {

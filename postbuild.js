@@ -1,3 +1,3 @@
-const shell = require('shelljs');
+// Post-build script
 
-shell.cp('src/*.css', 'dist');
+// Currently nothing

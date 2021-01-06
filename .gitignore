@@ -1,0 +1,10 @@
+# editor files
+/.idea
+*.iml
+
+# out
+/dist
+/coverage
+
+# libraries
+/node_modules
