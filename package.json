@@ -4,6 +4,9 @@
   "description": "Data object decorator with marshalling utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "rimraf dist && tsc -p tsconfig.build.json && node postbuild.js",
