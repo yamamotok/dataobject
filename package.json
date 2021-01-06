@@ -1,5 +1,5 @@
 {
-  "name": "dataobject",
+  "name": "@yamamotok/dataobject",
   "version": "0.1.0",
   "description": "Data object decorator with marshalling utilities.",
   "main": "dist/index.js",
