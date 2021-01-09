@@ -1,8 +1,10 @@
 dataobject
 ------------
 
-Decorate a class with "dataobject", and then you get utilities for transformation between
+Decorate a class with `@property()`, and then you get utilities for transformation between
 class instance and plain JS object.
+
+## Simple example
 
 ```typescript
 class MyEntity {
@@ -28,27 +30,92 @@ class MyEntity {
 }
 
 // Create an instance from a plain object.
-// For example, transform an object retrieved from NoSQL DB to a data object.
-const instance = MyEntity.factory({
+// For example, transformation from a source object from NoSQL DB.
+const source = {
   firstName: 'Taro',
   lastName: 'Okamoto',
   age: 45,
-});
+};
+const instance = MyEntity.factory(source);
 
 // Create a plain object from an instance.
-// For example, transform a data object to API response.
 const plain = MyEntity.toPlain(instance);
+// { firstName: 'Taro', lastName: 'Okamoto', age: 45 }
+
+// For example, transform a data object to API response.
 const response = MyEntity.toPlain(instance, 'response');
+// { firstName: 'Taro', lastName: 'Okamoto', age: 45, name: 'Taro Okamoto' }
 ``` 
 
 ## Features
 
-- Transform a class instance to a plain object.
-- Transform a plain object to a class instance.
-- Mark a property as "required', then factory will check it.
-- Contextual, you can limit transformation in a specific context. 
+- Transform a class instance to a plain object. (toPlain)
+- Transform a plain object to a class instance. (factory)
 
-TBD
+## @property, toPlain, factory
+
+A data object class;
+- must have at least one decorated property with `@property`.
+- must have `factory` static method, which can be created by using `createFactory`.
+- must have `toPlain` static method, which can be created by using `createToPlain`.
+
+The simplest class looks like
+```typescript
+class Entity {
+  @property()
+  id?: string;
+
+  static factory = createFactory(Entity);
+  static toPlain = createToPlain(Entity); 
+}
+```
+
+## @required
+
+Mark property as required then factory will check its existence.
+
+```typescript
+  @property()
+  @required()
+  id!: string
+```
+
+## @context
+
+You can make transformation work only in specific contexts.
+- factory method has "factory" context as default.
+- toPlain method has "toPlain" context as default.
+
+```typescript
+  @property()
+  @required()
+  @context('response')
+  id!: string
+```
+
+You can specify custom context;
+```
+Entity.toPlain(instance, 'response');
+```
+
+Negation (heading `!`) is available.
+```typescript
+  @property()
+  @required()
+  @context('!toPlain', '!response')
+  id!: string
+```
+
+## Custom transformation
+
+You can implement custom transformer like;
+```typescript
+  @property({ transformer: jsDateTransformer })
+  @required()
+  timestamp!: Date;
+```
+
+Please check `jsDateTransformer` in package for details.
 
 ## License (MIT)
 
