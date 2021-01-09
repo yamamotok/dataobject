@@ -1,4 +1,4 @@
-import { PropertyDecoratorOptions, Utils } from './PropertyDecoratorOptions';
+import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
 import { DataObjectError } from './DataObjectError';
 import { regularizePrimitive } from './regularizePrimitive';
@@ -51,8 +51,7 @@ export function createFactory<T>(ctor: new () => T): FactoryFunction<T> {
         // skip, because no entry was found in the source, or value was undefined.
         return;
       }
-      const utils = new Utils(options);
-      if (!utils.inContext(context)) {
+      if (!inContext(context, options?.context)) {
         // skip, out of context
         return;
       }

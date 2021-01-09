@@ -1,4 +1,4 @@
-import { PropertyDecoratorOptions, Utils } from './PropertyDecoratorOptions';
+import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
 import { ClassWithToPlain, ToPlainFunction } from './types';
 
@@ -37,8 +37,7 @@ export function createToPlain<T>(
 
     const ret: Record<string, unknown> = {};
     properties.forEach((options, _key) => {
-      const utils = new Utils(options);
-      if (!utils.inContext(context)) {
+      if (!inContext(context, options?.context)) {
         return; // skip, out of context
       }
       const key = _key as string & keyof T;

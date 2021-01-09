@@ -32,28 +32,36 @@ export interface PropertyDecoratorOptions {
 }
 
 /**
- * Utilities for {@link PropertyDecoratorOptions}.
+ * Check if the current context is one of expected ones.
  */
-export class Utils {
-  readonly options?: PropertyDecoratorOptions;
-
-  constructor(options: PropertyDecoratorOptions | undefined) {
-    this.options = options;
+export function inContext(
+  current: string | undefined,
+  expected: string | string[] | undefined
+): boolean {
+  if (!expected || !current) {
+    return true;
   }
-
-  /**
-   * Check if a given context is an expected one.
-   */
-  inContext(context?: string): boolean {
-    if (!this.options?.context || !context) {
-      return true;
-    }
-    let expected: string[] = [];
-    if (typeof this.options.context === 'string') {
-      expected = [this.options.context];
-    } else if (Array.isArray(this.options.context)) {
-      expected = this.options.context;
-    }
-    return expected.indexOf(context) >= 0;
+  let buffer: string[] = [];
+  if (typeof expected === 'string') {
+    buffer = [expected];
+  } else if (Array.isArray(expected)) {
+    buffer = [...expected];
   }
+  const expectedOnes: string[] = [];
+  const notExpectedOnes: string[] = [];
+  buffer.forEach((c) => {
+    const matches = c.match(/^!(.+)$/);
+    if (matches) {
+      notExpectedOnes.push(matches[1]);
+    } else {
+      expectedOnes.push(c);
+    }
+  });
+  if (notExpectedOnes.indexOf(current) >= 0) {
+    return false;
+  }
+  if (expectedOnes.length < 1) {
+    return true;
+  }
+  return expectedOnes.indexOf(current) >= 0;
 }

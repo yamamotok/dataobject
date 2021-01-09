@@ -16,6 +16,10 @@ export class ContextualObject {
   lastName!: string;
 
   @property()
+  @context('!response')
+  address?: string
+
+  @property()
   @context('response')
   get name() {
     return `${this.firstName} ${this.lastName}`;
