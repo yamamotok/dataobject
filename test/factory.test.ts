@@ -2,6 +2,8 @@ import { DataObjectError } from '../src';
 import { ChildObject } from './ChildObject';
 import { TimeObject } from './TimeObject';
 import { SimpleDataObject } from './SimpleDataObject';
+import { AllOptionalObject } from './AllOptionalObject';
+import { NoPropertyObject } from './NoPropertyObject';
 
 describe('Test factory function', () => {
   test('Create an instance with using factory', () => {
@@ -114,5 +116,26 @@ describe('Test factory function', () => {
     });
     expect(created.timestamp).toBeInstanceOf(Date);
     expect(created.timestamp.getUTCFullYear()).toBe(2020);
+  });
+
+  test('Factory works even without any input', () => {
+    let instance = AllOptionalObject.factory();
+    expect(instance).toBeInstanceOf(AllOptionalObject);
+    expect(instance.name).toBe('');
+    expect(instance.lunch).toBeUndefined();
+
+    instance = AllOptionalObject.factory({});
+    expect(instance).toBeInstanceOf(AllOptionalObject);
+    expect(instance.name).toBe('');
+    expect(instance.lunch).toBeUndefined();
+  });
+
+  test('Factory throws error if the object was not decorated', () => {
+    expect(() => {
+      NoPropertyObject.factory({
+        name: 'Hello',
+      });
+    }).toThrowError(DataObjectError);
+
   });
 });
