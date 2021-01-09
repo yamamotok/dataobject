@@ -1,4 +1,4 @@
-import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+import { PropertyDecoratorOptions, inContext } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
 import { ClassWithToPlain, ToPlainFunction } from './types';
 
