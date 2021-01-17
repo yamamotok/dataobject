@@ -12,3 +12,6 @@ export { createFactory } from './createFactory';
 export { createToPlain } from './createToPlain';
 export { DataObjectError } from './DataObjectError';
 export const jsDateTransformer = new JsDateTransformer();
+export type { ClassWithFactory, ClassWithToPlain, DataObjectClass } from './types';
+export { hasFactory } from './hasFactory';
+export { hasToPlain } from './hasToPlain';

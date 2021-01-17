@@ -1,5 +1,6 @@
-import { SimpleDataObject } from "./SimpleDataObject";
-import { TimeObject } from "./TimeObject";
+import { SimpleDataObject } from './SimpleDataObject';
+import { TimeObject } from './TimeObject';
+import { TYPE_ATTRIBUTE_NAME } from '../src/types';
 
 describe('Test toPlain function', () => {
   test('Transform simple instance to plain object', () => {
@@ -27,6 +28,7 @@ describe('Test toPlain function', () => {
     };
     const instance = SimpleDataObject.factory(source);
     const plain = SimpleDataObject.toPlain(instance);
+    delete (plain.child as Record<string, unknown>)[TYPE_ATTRIBUTE_NAME];
     expect(plain).toEqual(source);
   });
 
@@ -47,6 +49,8 @@ describe('Test toPlain function', () => {
     };
     const instance = SimpleDataObject.factory(source);
     const plain = SimpleDataObject.toPlain(instance);
+    delete (plain.children as Record<string, unknown>[])[0][TYPE_ATTRIBUTE_NAME];
+    delete (plain.children as Record<string, unknown>[])[1][TYPE_ATTRIBUTE_NAME];
     expect(plain).toEqual(source);
   });
 

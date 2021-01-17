@@ -1,4 +1,4 @@
-import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+import { PropertyDecoratorOptions, assumeType, inContext } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
 import { DataObjectError } from './DataObjectError';
 import { regularizePrimitive } from './regularizePrimitive';
@@ -32,7 +32,10 @@ export function createFactory<T>(ctor: new () => T): FactoryFunction<T> {
         return undefined;
       }
       if (options?.type) {
-        const type = options.type();
+        const type = assumeType(options.type(), value);
+        if (value instanceof type) {
+          return value; // no transformation is necessary.
+        }
         const classWithFactory = type as ClassWithFactory<InstanceType<typeof type>>;
         return classWithFactory.factory(value as SourceType<typeof type>);
       }

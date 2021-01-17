@@ -1,6 +1,6 @@
-import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+import { PropertyDecoratorOptions, assumeType, inContext } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
-import { ClassWithToPlain, ToPlainFunction } from './types';
+import { ClassWithToPlain, TYPE_ATTRIBUTE_NAME, ToPlainFunction } from './types';
 
 /**
  * Create toPlain() method.
@@ -29,8 +29,12 @@ export function createToPlain<T>(
         return undefined;
       }
       if (options?.type) {
-        const type = options.type();
-        return (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value);
+        const type = assumeType(options.type(), value);
+        const ret = (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value);
+        if (!ret[TYPE_ATTRIBUTE_NAME]) {
+          ret[TYPE_ATTRIBUTE_NAME] = type.name;
+        }
+        return ret;
       }
       return value;
     }
