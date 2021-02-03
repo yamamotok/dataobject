@@ -70,6 +70,38 @@ class Entity {
 }
 ```
 
+You can set the type explicitly.
+
+```typescript
+  @property({ type: () => NormalTicket })
+  tickets?: NormalTicket;
+```
+
+Also, multiple types can be set. Please be noted that every type specified has to be a data object.
+
+```typescript
+  @property({ type: () => [SpecialTicket, NormalTicket] })
+  tickets: Tickets[] = [];
+```
+
+Note: `toPlain` will add a special attribute `__type` to an object in output.
+This will be used by `factory` later to assume its original type.
+Output should look like:
+
+```typescript
+tickets: [
+  {
+    name: 'normal ticket name',
+    __type: 'NormalTicket',
+  },
+  {
+    name: 'special ticket name',
+    __type: 'SpecialTicket',
+  },
+];
+```
+
+
 ## @required
 
 Mark property as required then factory will check its existence.
