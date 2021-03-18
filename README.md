@@ -70,6 +70,38 @@ class Entity {
 }
 ```
 
+You can set the type explicitly.
+
+```typescript
+  @property({ type: () => NormalTicket })
+  tickets?: NormalTicket;
+```
+
+Also, multiple types can be set. Please be noted that every type specified has to be a data object.
+
+```typescript
+  @property({ type: () => [SpecialTicket, NormalTicket] })
+  tickets: Tickets[] = [];
+```
+
+Note: `toPlain` will add a special attribute `__type` to an object in output.
+This will be used by `factory` later to assume its original type.
+Output should look like:
+
+```typescript
+tickets: [
+  {
+    name: 'normal ticket name',
+    __type: 'NormalTicket',
+  },
+  {
+    name: 'special ticket name',
+    __type: 'SpecialTicket',
+  },
+];
+```
+
+
 ## @required
 
 Mark property as required then factory will check its existence.
@@ -105,6 +137,23 @@ Negation (heading `!`) is available.
   @context('!toPlain', '!response')
   id!: string
 ```
+
+## @spread
+
+Spread the value in `toPlain` process. If you give context option (like @context), this will work in the context.
+
+In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 'inspection')` spreads both `details` and `secrets`.
+
+```typescript
+  @property
+  @spread
+  details?: Record<string, unknown>
+  
+  @property
+  @spread('inspection')
+  secrets?: Record<string, unknown>
+```
+
 
 ## Custom transformation
 

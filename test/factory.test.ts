@@ -63,6 +63,17 @@ describe('Test factory function', () => {
     expect(created.child?.options?.count).toBe(9);
   });
 
+  test('Factory can create, in case a child is given as an instance', () => {
+    const created = SimpleDataObject.factory({
+      id: 3,
+      label: 'Hello',
+      child: ChildObject.factory({ id: '3-2', name: 'child instance' }),
+    });
+    expect(created.child).toBeInstanceOf(ChildObject);
+    expect(created.child?.id).toBe('3-2');
+    expect(created.child?.name).toBe('child instance');
+  });
+
   test('Factory may fail a child object', () => {
     expect(() => {
       SimpleDataObject.factory({

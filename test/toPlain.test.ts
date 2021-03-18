@@ -1,5 +1,7 @@
-import { SimpleDataObject } from "./SimpleDataObject";
-import { TimeObject } from "./TimeObject";
+import { SimpleDataObject } from './SimpleDataObject';
+import { TimeObject } from './TimeObject';
+import { TYPE_ATTRIBUTE_NAME } from '../src/types';
+import { FlatDataObject } from './FlatDataObject';
 
 describe('Test toPlain function', () => {
   test('Transform simple instance to plain object', () => {
@@ -27,6 +29,7 @@ describe('Test toPlain function', () => {
     };
     const instance = SimpleDataObject.factory(source);
     const plain = SimpleDataObject.toPlain(instance);
+    delete (plain.child as Record<string, unknown>)[TYPE_ATTRIBUTE_NAME];
     expect(plain).toEqual(source);
   });
 
@@ -47,6 +50,8 @@ describe('Test toPlain function', () => {
     };
     const instance = SimpleDataObject.factory(source);
     const plain = SimpleDataObject.toPlain(instance);
+    delete (plain.children as Record<string, unknown>[])[0][TYPE_ATTRIBUTE_NAME];
+    delete (plain.children as Record<string, unknown>[])[1][TYPE_ATTRIBUTE_NAME];
     expect(plain).toEqual(source);
   });
 
@@ -57,4 +62,65 @@ describe('Test toPlain function', () => {
     const plain = TimeObject.toPlain(instance);
     expect(plain.timestamp).toMatch(/^2020-11-22/);
   });
+
+  describe('Transform instance with using @spread', () => {
+    test('use @spread', () => {{
+      const instance = FlatDataObject.factory({
+        id: 3,
+        details: {
+          name: 'Hello',
+        },
+        secrets: {
+          birthMonth: 'May'
+        },
+      });
+      const plain = FlatDataObject.toPlain(instance);
+      expect(plain.details).toBeUndefined();
+      expect(plain.id).toBe(3);
+      expect(plain.name).toBe('Hello');
+      expect(plain.secrets).toEqual({ birthMonth: 'May' });
+    }});
+
+    test('use @spread with context', () => {{
+      const instance = FlatDataObject.factory({
+        id: 3,
+        details: {
+          name: 'Hello',
+        },
+        secrets: {
+          birthMonth: 'May'
+        },
+      });
+      const plain = FlatDataObject.toPlain(instance, 'inspect');
+      expect(plain.details).toBeUndefined();
+      expect(plain.secrets).toBeUndefined();
+      expect(plain.id).toBe(3);
+      expect(plain.name).toBe('Hello');
+      expect(plain.birthMonth).toBe('May');
+    }});
+
+    test('use @spread but the value is empty', () => {{
+      const instance = FlatDataObject.factory({
+        id: 3,
+        details: {},
+      });
+      const plain = FlatDataObject.toPlain(instance, 'inspect');
+      expect(plain.details).toBeUndefined();
+      expect(plain).toEqual({ id: 3 });
+    }});
+
+    test('spread entries will not override existing ones with same names', () => {{
+      const instance = FlatDataObject.factory({
+        id: 3,
+        details: {
+          id: 999
+        },
+      });
+      const plain = FlatDataObject.toPlain(instance);
+      expect(plain.details).toBeUndefined();
+      expect(plain).toEqual({ id: 3 });
+    }});
+  });
+
+
 });

@@ -10,3 +10,5 @@ export type ToPlainFunction<T> = (source: T, context?: string) => Record<string,
 export type ClassWithToPlain<T> = NoArgConstructor<T> & { toPlain: ToPlainFunction<T> };
 
 export type DataObjectClass<T> = ClassWithFactory<T> & ClassWithToPlain<T>;
+
+export const TYPE_ATTRIBUTE_NAME = '__type';

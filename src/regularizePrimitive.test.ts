@@ -20,9 +20,10 @@ describe('regularizePrimitive', () => {
   });
 
   it('can regularize string-like value', () => {
-    expect(regularizePrimitive(undefined, String)).toBe('undefined');
-    expect(regularizePrimitive(null, String)).toBe('null');
+    expect(regularizePrimitive(undefined, String)).toBe('');
+    expect(regularizePrimitive(null, String)).toBe('');
     expect(regularizePrimitive(true, String)).toBe('true');
+    expect(regularizePrimitive(false, String)).toBe('false');
     expect(regularizePrimitive(0, String)).toBe('0');
     expect(regularizePrimitive(-123, String)).toBe('-123');
     expect(regularizePrimitive(456, String)).toBe('456');

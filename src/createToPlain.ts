@@ -1,6 +1,6 @@
-import { inContext, PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+import { PropertyDecoratorOptions, assumeType, inContext } from './PropertyDecoratorOptions';
 import { Decorator } from './Decorator';
-import { ClassWithToPlain, ToPlainFunction } from './types';
+import { ClassWithToPlain, TYPE_ATTRIBUTE_NAME, ToPlainFunction } from './types';
 
 /**
  * Create toPlain() method.
@@ -29,13 +29,17 @@ export function createToPlain<T>(
         return undefined;
       }
       if (options?.type) {
-        const type = options.type();
-        return (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value);
+        const type = assumeType(options.type(), value);
+        const ret = (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value);
+        if (!ret[TYPE_ATTRIBUTE_NAME]) {
+          ret[TYPE_ATTRIBUTE_NAME] = type.name;
+        }
+        return ret;
       }
       return value;
     }
 
-    const ret: Record<string, unknown> = {};
+    let ret: Record<string, unknown> = {};
     properties.forEach((options, _key) => {
       if (!inContext(context, options?.context)) {
         return; // skip, out of context
@@ -49,7 +53,11 @@ export function createToPlain<T>(
       if (transformed === undefined && toPlainOptions?.omitUndefined !== false) {
         return; // skip, because the transformed value is undefined.
       }
-      ret[key] = transformed;
+      if (typeof transformed === 'object' && options?.spread && inContext(context, options.spread.context)) {
+        ret = { ...transformed, ...ret }
+      } else {
+        ret[key] = transformed;
+      }
     });
     return ret;
   };
