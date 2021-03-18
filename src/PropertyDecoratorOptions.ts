@@ -29,6 +29,11 @@ export interface PropertyDecoratorOptions {
    * Factory function throws error in case `required` is true but no value was given.
    */
   required?: boolean;
+
+  /**
+   * ToPlain function spreads this property value. (value must be an object)
+   */
+  spread?: { context?: string | string[] };
 }
 
 /**

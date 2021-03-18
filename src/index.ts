@@ -8,6 +8,7 @@ import { JsDateTransformer } from './JsDateTransformer';
 export const property = Decorator.property;
 export const required = Decorator.required;
 export const context = Decorator.context;
+export const spread = Decorator.spread;
 export { createFactory } from './createFactory';
 export { createToPlain } from './createToPlain';
 export { DataObjectError } from './DataObjectError';

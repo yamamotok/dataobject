@@ -39,7 +39,7 @@ export function createToPlain<T>(
       return value;
     }
 
-    const ret: Record<string, unknown> = {};
+    let ret: Record<string, unknown> = {};
     properties.forEach((options, _key) => {
       if (!inContext(context, options?.context)) {
         return; // skip, out of context
@@ -53,7 +53,11 @@ export function createToPlain<T>(
       if (transformed === undefined && toPlainOptions?.omitUndefined !== false) {
         return; // skip, because the transformed value is undefined.
       }
-      ret[key] = transformed;
+      if (typeof transformed === 'object' && options?.spread && inContext(context, options.spread.context)) {
+        ret = { ...transformed, ...ret }
+      } else {
+        ret[key] = transformed;
+      }
     });
     return ret;
   };

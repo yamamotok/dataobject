@@ -38,6 +38,13 @@ export class Decorator {
     };
   }
 
+  static spread(context?: string | string[]): PropertyDecorator {
+    return (target, propertyKey) => {
+      const map = Decorator.propertyMap(target);
+      map.set(propertyKey, { ...map.get(propertyKey), spread: { context } });
+    };
+  }
+
   static context(...contextNames: string[]): PropertyDecorator {
     return (target, propertyKey) => {
       if (contextNames.length < 1) {
