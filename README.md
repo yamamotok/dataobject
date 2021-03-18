@@ -138,6 +138,23 @@ Negation (heading `!`) is available.
   id!: string
 ```
 
+## @spread
+
+Spread the value in `toPlain` process. If you give context option (like @context), this will work in the context.
+
+In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 'inspection')` spreads both `details` and `secrets`.
+
+```typescript
+  @property
+  @spread
+  details?: Record<string, unknown>
+  
+  @property
+  @spread('inspection')
+  secrets?: Record<string, unknown>
+```
+
+
 ## Custom transformation
 
 You can implement custom transformer like;
