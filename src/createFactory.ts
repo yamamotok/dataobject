@@ -37,7 +37,7 @@ export function createFactory<T>(ctor: new () => T): FactoryFunction<T> {
           return value; // no transformation is necessary.
         }
         const classWithFactory = type as ClassWithFactory<InstanceType<typeof type>>;
-        return classWithFactory.factory(value as SourceType<typeof type>);
+        return classWithFactory.factory(value as SourceType<typeof type>, context);
       }
       if (options?.typeInfo) {
         return regularizePrimitive(value, options.typeInfo);

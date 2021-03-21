@@ -30,7 +30,7 @@ export function createToPlain<T>(
       }
       if (options?.type) {
         const type = assumeType(options.type(), value);
-        const ret = (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value);
+        const ret = (type as ClassWithToPlain<InstanceType<typeof type>>).toPlain(value, context);
         if (!ret[TYPE_ATTRIBUTE_NAME]) {
           ret[TYPE_ATTRIBUTE_NAME] = type.name;
         }
@@ -53,8 +53,12 @@ export function createToPlain<T>(
       if (transformed === undefined && toPlainOptions?.omitUndefined !== false) {
         return; // skip, because the transformed value is undefined.
       }
-      if (typeof transformed === 'object' && options?.spread && inContext(context, options.spread.context)) {
-        ret = { ...transformed, ...ret }
+      if (
+        typeof transformed === 'object' &&
+        options?.spread &&
+        inContext(context, options.spread.context)
+      ) {
+        ret = { ...transformed, ...ret };
       } else {
         ret[key] = transformed;
       }
