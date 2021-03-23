@@ -1,9 +1,10 @@
 import { DataObjectError } from '../src';
-import { ChildObject } from './ChildObject';
-import { TimeObject } from './TimeObject';
-import { SimpleDataObject } from './SimpleDataObject';
-import { AllOptionalObject } from './AllOptionalObject';
-import { NoPropertyObject } from './NoPropertyObject';
+
+import { ChildObject } from './fixtures/ChildObject';
+import { TimeObject } from './fixtures/TimeObject';
+import { SimpleDataObject } from './fixtures/SimpleDataObject';
+import { AllOptionalObject } from './fixtures/AllOptionalObject';
+import { NoPropertyObject } from './fixtures/NoPropertyObject';
 
 describe('Test factory function', () => {
   test('Create an instance with using factory', () => {
@@ -63,6 +64,17 @@ describe('Test factory function', () => {
     expect(created.child?.options?.count).toBe(9);
   });
 
+  test('Factory can create, in case a child is given as an instance', () => {
+    const created = SimpleDataObject.factory({
+      id: 3,
+      label: 'Hello',
+      child: ChildObject.factory({ id: '3-2', name: 'child instance' }),
+    });
+    expect(created.child).toBeInstanceOf(ChildObject);
+    expect(created.child?.id).toBe('3-2');
+    expect(created.child?.name).toBe('child instance');
+  });
+
   test('Factory may fail a child object', () => {
     expect(() => {
       SimpleDataObject.factory({
@@ -104,10 +116,10 @@ describe('Test factory function', () => {
       ],
     });
     expect(created.children?.length).toBe(2);
-    expect(created.children![0]).toBeInstanceOf(ChildObject);
-    expect(created.children![1]).toBeInstanceOf(ChildObject);
-    expect(created.children![0].id).toBe('3-1');
-    expect(created.children![1].id).toBe('3-2');
+    expect(created.children?.[0]).toBeInstanceOf(ChildObject);
+    expect(created.children?.[1]).toBeInstanceOf(ChildObject);
+    expect(created.children?.[0].id).toBe('3-1');
+    expect(created.children?.[1].id).toBe('3-2');
   });
 
   test('JS date transformer', () => {
@@ -136,6 +148,5 @@ describe('Test factory function', () => {
         name: 'Hello',
       });
     }).toThrowError(DataObjectError);
-
   });
 });

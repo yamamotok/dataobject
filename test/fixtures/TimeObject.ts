@@ -1,4 +1,4 @@
-import { createFactory, createToPlain, jsDateTransformer, property, required } from "../src";
+import { createFactory, createToPlain, jsDateTransformer, property, required } from '../../src';
 
 export class TimeObject {
   @property({ transformer: jsDateTransformer })

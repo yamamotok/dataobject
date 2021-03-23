@@ -1,7 +1,7 @@
 import { DataObjectError } from './DataObjectError';
 
 describe('DataObjectError', () => {
-  test('instanceOf works correct with this custom error', () => {
+  test('Make sure `instanceOf` will work correctly with custom error', () => {
     const func = () => {
       throw new DataObjectError('Test');
     };

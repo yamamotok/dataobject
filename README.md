@@ -1,10 +1,19 @@
 dataobject
 ------------
 
-Decorate a class with `@property()`, and then you get utilities for transformation between
-class instance and plain JS object.
+[![codecov](https://codecov.io/gh/yamamotok/dataobject/branch/develop/graph/badge.svg?token=F7O9X2PWOJ)](https://codecov.io/gh/yamamotok/dataobject)
+[![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
 
-## Simple example
+Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
+You can control its behavior by using annotations.
+Inspired by [class-transformer](https://github.com/typestack/class-transformer)
+
+クラスインスタンスとJSのオブジェクトの変換を容易にします。
+TypeScriptのプロジェクトのために開発されました。
+アノテーションを利用して挙動をコントロールすることができます。
+
+
+## Quick examples
 
 ```typescript
 class MyEntity {
@@ -70,6 +79,38 @@ class Entity {
 }
 ```
 
+You can set the type explicitly.
+
+```typescript
+  @property({ type: () => NormalTicket })
+  tickets?: NormalTicket;
+```
+
+Also, multiple types can be set. Please be noted that every type specified has to be a data object.
+
+```typescript
+  @property({ type: () => [SpecialTicket, NormalTicket] })
+  tickets: Tickets[] = [];
+```
+
+Note: `toPlain` will add a special attribute `__type` to an object in output.
+This will be used by `factory` later to assume its original type.
+Output should look like:
+
+```typescript
+tickets: [
+  {
+    name: 'normal ticket name',
+    __type: 'NormalTicket',
+  },
+  {
+    name: 'special ticket name',
+    __type: 'SpecialTicket',
+  },
+];
+```
+
+
 ## @required
 
 Mark property as required then factory will check its existence.
@@ -105,6 +146,23 @@ Negation (heading `!`) is available.
   @context('!toPlain', '!response')
   id!: string
 ```
+
+## @spread
+
+Spread the value in `toPlain` process. If you give context option (like @context), this will work in the context.
+
+In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 'inspection')` spreads both `details` and `secrets`.
+
+```typescript
+  @property
+  @spread
+  details?: Record<string, unknown>
+  
+  @property
+  @spread('inspection')
+  secrets?: Record<string, unknown>
+```
+
 
 ## Custom transformation
 

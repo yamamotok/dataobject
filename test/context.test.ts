@@ -1,4 +1,4 @@
-import { ContextualObject } from './ContextualObject';
+import { ContextualObject } from './fixtures/ContextualObject';
 
 describe('Test contextual transformation', () => {
   test('Transformation in default "toPlain" context', () => {
