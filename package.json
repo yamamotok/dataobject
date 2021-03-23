@@ -30,10 +30,15 @@
     "url": "https://github.com/yamamotok/dataobject"
   },
   "keywords": [
-    "typescript",
+    "deserialization",
     "json",
     "marshaller",
-    "transformer"
+    "object-to-class",
+    "serialization",
+    "serializer",
+    "transformer",
+    "typescript",
+    "typescript-serializer"
   ],
   "license": "MIT",
   "devDependencies": {
