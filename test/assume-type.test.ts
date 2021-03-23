@@ -1,7 +1,8 @@
-import { MultiTypeChildObject } from './MultiTypeChildObject';
-import { ChildObjectA } from './ChildObjectA';
-import { ChildObjectB } from './ChildObjectB';
 import { TYPE_ATTRIBUTE_NAME } from '../src/types';
+
+import { MultiTypeChildObject } from './fixtures/MultiTypeChildObject';
+import { ChildObjectA } from './fixtures/ChildObjectA';
+import { ChildObjectB } from './fixtures/ChildObjectB';
 
 describe('assume-type test', () => {
   test('Assume a type', () => {
@@ -45,7 +46,7 @@ describe('assume-type test', () => {
       ],
     };
     const instance = MultiTypeChildObject.factory(source);
-    expect(instance.children![0]).toBeInstanceOf(ChildObjectA);
-    expect(instance.children![1]).toBeInstanceOf(ChildObjectB);
+    expect(instance.children?.[0]).toBeInstanceOf(ChildObjectA);
+    expect(instance.children?.[1]).toBeInstanceOf(ChildObjectB);
   });
 });

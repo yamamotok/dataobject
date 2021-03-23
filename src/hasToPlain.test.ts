@@ -1,10 +1,10 @@
-import { SimpleDataObject } from '../test/SimpleDataObject';
-import { TimeObject } from '../test/TimeObject';
+import { SimpleDataObject } from '../test/fixtures/SimpleDataObject';
+import { TimeObject } from '../test/fixtures/TimeObject';
 
 import { hasToPlain } from './hasToPlain';
 
 describe('hasToPlain', () => {
-  test('check a class has toPlain method', () => {
+  it('should check if a class has toPlain method', () => {
     expect(hasToPlain(SimpleDataObject)).toBe(true);
     expect(hasToPlain(TimeObject)).toBe(true);
     expect(hasToPlain(ExceptionalObject)).toBe(false);

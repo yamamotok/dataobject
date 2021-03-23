@@ -1,4 +1,5 @@
-import { createFactory, createToPlain, property } from '../src';
+import { createFactory, createToPlain, property } from '../../src';
+
 import { ChildObjectA } from './ChildObjectA';
 import { ChildObjectB } from './ChildObjectB';
 
@@ -15,4 +16,3 @@ export class MultiTypeChildObject {
   static factory = createFactory(MultiTypeChildObject);
   static toPlain = createToPlain(MultiTypeChildObject);
 }
-

@@ -1,4 +1,4 @@
-import { createFactory, createToPlain, property, required, spread } from '../src';
+import { createFactory, createToPlain, property, required, spread } from '../../src';
 
 export class FlatDataObject {
   @property()

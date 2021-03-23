@@ -1,4 +1,4 @@
-import { inContext } from './PropertyDecoratorOptions';
+import { inContext } from './in-context';
 
 describe('PropertyDecoratorOptions', () => {
   test('Context matching, in case no expected context', () => {

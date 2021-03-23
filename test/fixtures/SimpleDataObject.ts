@@ -1,5 +1,6 @@
-import { createFactory, createToPlain, property, required } from '../src';
-import { ChildObject } from "./ChildObject";
+import { createFactory, createToPlain, property, required } from '../../src';
+
+import { ChildObject } from './ChildObject';
 
 export class SimpleDataObject {
   @property()

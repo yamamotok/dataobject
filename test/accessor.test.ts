@@ -1,7 +1,7 @@
-import { AccessorObject } from './AccessorObject';
+import { context, createFactory, createToPlain, property } from '../src';
 
 describe('Work with accessors', () => {
-  test('work with setter and getter', () => {
+  it('should work with setter and getter', () => {
     const instance = AccessorObject.factory({ name: '  Okamoto ' });
     expect(instance.name).toBe('Okamoto');
 
@@ -9,7 +9,7 @@ describe('Work with accessors', () => {
     expect(plain.name).toBe('Okamoto');
   });
 
-  test('Work with getter', () => {
+  it('should work with getter', () => {
     const instance = AccessorObject.factory({ name: '  Okamoto ' });
     expect(instance.titled).toBe('Okamoto san');
 
@@ -17,21 +17,51 @@ describe('Work with accessors', () => {
     expect(plain.titled).toBe('Okamoto san');
   });
 
-  test('Work with getter, factory should ignore it', () => {
+  it('should work with getter, factory should ignore it', () => {
     // 'titled' is ignored in factory because of its context setting.
     const instance = AccessorObject.factory({
       name: 'Sakamoto',
       titled: 'Sakamoto sama',
-    })
+    });
     expect(instance.titled).toBe('Sakamoto san');
   });
 
-  test('Work with getter, misconfiguration causes error', () => {
+  it('should work with getter, misconfiguration causes error', () => {
     expect(() => {
       AccessorObject.factory({
         name: 'Sakamoto',
         juniorTitled: 'Sakamoto kun',
-      })
+      });
     }).toThrowError(TypeError);
   });
 });
+
+class AccessorObject {
+  private _name: string = '';
+
+  @property()
+  get name(): string {
+    return this._name;
+  }
+
+  set name(name: string) {
+    this._name = name.trim();
+  }
+
+  @property()
+  @context('!factory')
+  get titled(): string {
+    return this._name + ' san';
+  }
+
+  /**
+   * Misconfiguration, this should have `@context('!factory')`.
+   */
+  @property()
+  get juniorTitled(): string {
+    return this._name + ' kun';
+  }
+
+  static factory = createFactory(AccessorObject);
+  static toPlain = createToPlain(AccessorObject);
+}

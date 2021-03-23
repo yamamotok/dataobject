@@ -1,5 +1,5 @@
-import { TransformerSet } from './ValueTransformer';
-import { DataObjectClass, TYPE_ATTRIBUTE_NAME } from './types';
+import { TransformerSet } from './TransformerSet';
+import { DataObjectClass } from './types';
 
 /**
  * Options given to `@property` decorator.
@@ -34,71 +34,4 @@ export interface PropertyDecoratorOptions {
    * ToPlain function spreads this property value. (value must be an object)
    */
   spread?: { context?: string | string[] };
-}
-
-/**
- * Assume the type with value (instance).
- */
-export function assumeType(
-  types: DataObjectClass<any> | DataObjectClass<any>[], // eslint-disable-line
-  value?: unknown
-  // eslint-disable-next-line
-): DataObjectClass<any> {
-  if (!Array.isArray(types)) {
-    return types;
-  }
-  if (!value) {
-    throw Error('Implementation error, value has to be given to assume the type');
-  }
-  let assumed = types.find((t) => {
-    return value instanceof t;
-  });
-  if (assumed) {
-    return assumed;
-  }
-  assumed = types.find((t) => {
-    if (!Object.prototype.hasOwnProperty.call(value, TYPE_ATTRIBUTE_NAME)) {
-      return false;
-    }
-    return t.name === (value as { [TYPE_ATTRIBUTE_NAME]: string })[TYPE_ATTRIBUTE_NAME];
-  });
-  if (assumed) {
-    return assumed;
-  }
-  throw Error('Implementation error, seems value has an unexpected type');
-}
-
-/**
- * Check if the current context is one of expected ones.
- */
-export function inContext(
-  current: string | undefined,
-  expected: string | string[] | undefined
-): boolean {
-  if (!expected || !current) {
-    return true;
-  }
-  let buffer: string[] = [];
-  if (typeof expected === 'string') {
-    buffer = [expected];
-  } else if (Array.isArray(expected)) {
-    buffer = [...expected];
-  }
-  const expectedOnes: string[] = [];
-  const notExpectedOnes: string[] = [];
-  buffer.forEach((c) => {
-    const matches = c.match(/^!(.+)$/);
-    if (matches) {
-      notExpectedOnes.push(matches[1]);
-    } else {
-      expectedOnes.push(c);
-    }
-  });
-  if (notExpectedOnes.indexOf(current) >= 0) {
-    return false;
-  }
-  if (expectedOnes.length < 1) {
-    return true;
-  }
-  return expectedOnes.indexOf(current) >= 0;
 }

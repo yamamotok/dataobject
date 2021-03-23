@@ -1,4 +1,4 @@
-import { createFactory, createToPlain, property } from '../src';
+import { createFactory, createToPlain, property } from '../../src';
 
 export class ChildObjectA {
   @property()

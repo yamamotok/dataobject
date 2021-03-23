@@ -1,7 +1,8 @@
-import { SimpleDataObject } from './SimpleDataObject';
-import { TimeObject } from './TimeObject';
 import { TYPE_ATTRIBUTE_NAME } from '../src/types';
-import { FlatDataObject } from './FlatDataObject';
+
+import { SimpleDataObject } from './fixtures/SimpleDataObject';
+import { TimeObject } from './fixtures/TimeObject';
+import { FlatDataObject } from './fixtures/FlatDataObject';
 
 describe('Test toPlain function', () => {
   test('Transform simple instance to plain object', () => {
@@ -64,63 +65,69 @@ describe('Test toPlain function', () => {
   });
 
   describe('Transform instance with using @spread', () => {
-    test('use @spread', () => {{
-      const instance = FlatDataObject.factory({
-        id: 3,
-        details: {
-          name: 'Hello',
-        },
-        secrets: {
-          birthMonth: 'May'
-        },
-      });
-      const plain = FlatDataObject.toPlain(instance);
-      expect(plain.details).toBeUndefined();
-      expect(plain.id).toBe(3);
-      expect(plain.name).toBe('Hello');
-      expect(plain.secrets).toEqual({ birthMonth: 'May' });
-    }});
+    test('use @spread', () => {
+      {
+        const instance = FlatDataObject.factory({
+          id: 3,
+          details: {
+            name: 'Hello',
+          },
+          secrets: {
+            birthMonth: 'May',
+          },
+        });
+        const plain = FlatDataObject.toPlain(instance);
+        expect(plain.details).toBeUndefined();
+        expect(plain.id).toBe(3);
+        expect(plain.name).toBe('Hello');
+        expect(plain.secrets).toEqual({ birthMonth: 'May' });
+      }
+    });
 
-    test('use @spread with context', () => {{
-      const instance = FlatDataObject.factory({
-        id: 3,
-        details: {
-          name: 'Hello',
-        },
-        secrets: {
-          birthMonth: 'May'
-        },
-      });
-      const plain = FlatDataObject.toPlain(instance, 'inspect');
-      expect(plain.details).toBeUndefined();
-      expect(plain.secrets).toBeUndefined();
-      expect(plain.id).toBe(3);
-      expect(plain.name).toBe('Hello');
-      expect(plain.birthMonth).toBe('May');
-    }});
+    test('use @spread with context', () => {
+      {
+        const instance = FlatDataObject.factory({
+          id: 3,
+          details: {
+            name: 'Hello',
+          },
+          secrets: {
+            birthMonth: 'May',
+          },
+        });
+        const plain = FlatDataObject.toPlain(instance, 'inspect');
+        expect(plain.details).toBeUndefined();
+        expect(plain.secrets).toBeUndefined();
+        expect(plain.id).toBe(3);
+        expect(plain.name).toBe('Hello');
+        expect(plain.birthMonth).toBe('May');
+      }
+    });
 
-    test('use @spread but the value is empty', () => {{
-      const instance = FlatDataObject.factory({
-        id: 3,
-        details: {},
-      });
-      const plain = FlatDataObject.toPlain(instance, 'inspect');
-      expect(plain.details).toBeUndefined();
-      expect(plain).toEqual({ id: 3 });
-    }});
+    test('use @spread but the value is empty', () => {
+      {
+        const instance = FlatDataObject.factory({
+          id: 3,
+          details: {},
+        });
+        const plain = FlatDataObject.toPlain(instance, 'inspect');
+        expect(plain.details).toBeUndefined();
+        expect(plain).toEqual({ id: 3 });
+      }
+    });
 
-    test('spread entries will not override existing ones with same names', () => {{
-      const instance = FlatDataObject.factory({
-        id: 3,
-        details: {
-          id: 999
-        },
-      });
-      const plain = FlatDataObject.toPlain(instance);
-      expect(plain.details).toBeUndefined();
-      expect(plain).toEqual({ id: 3 });
-    }});
+    test('spread entries will not override existing ones with same names', () => {
+      {
+        const instance = FlatDataObject.factory({
+          id: 3,
+          details: {
+            id: 999,
+          },
+        });
+        const plain = FlatDataObject.toPlain(instance);
+        expect(plain.details).toBeUndefined();
+        expect(plain).toEqual({ id: 3 });
+      }
+    });
   });
-
-
 });

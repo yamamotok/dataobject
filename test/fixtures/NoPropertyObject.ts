@@ -1,4 +1,4 @@
-import { createFactory, createToPlain } from '../src';
+import { createFactory, createToPlain } from '../../src';
 
 /**
  * This will cause error because this has no `@property` decorated property.
