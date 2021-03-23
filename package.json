@@ -1,6 +1,6 @@
 {
   "name": "@yamamotok/dataobject",
-  "version": "0.1.1",
+  "version": "0.3.1",
   "description": "Data object decorator with marshalling utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,10 +30,15 @@
     "url": "https://github.com/yamamotok/dataobject"
   },
   "keywords": [
-    "typescript",
+    "deserialization",
     "json",
     "marshaller",
-    "transformer"
+    "object-to-class",
+    "serialization",
+    "serializer",
+    "transformer",
+    "typescript",
+    "typescript-serializer"
   ],
   "license": "MIT",
   "devDependencies": {
@@ -54,7 +59,7 @@
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.2.3"
+    "typescript": "4.1.3"
   },
   "dependencies": {}
 }
