@@ -9,4 +9,5 @@ module.exports = {
   setupFiles: ['<rootDir>/src/setupTests.ts'],
   resetMocks: true,
   restoreMocks: true,
+  coveragePathIgnorePatterns: ['node_modules', 'test'],
 };

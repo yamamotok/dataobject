@@ -12,6 +12,7 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json && node postbuild.js",
     "test": "jest",
     "test:debug": "jest --runInBand",
+    "test:coverage": "jest --runInBand --collectCoverage=true",
     "prettier": "run-p prettier:src prettier:test",
     "prettier:src": "prettier --ignore-path .gitignore --write \"src/**/*.{ts,js,json}\"",
     "prettier:test": "prettier --ignore-path .gitignore --write \"test/**/*.{ts,js,json}\"",
