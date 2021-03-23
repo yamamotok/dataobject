@@ -1,10 +1,16 @@
 dataobject
 ------------
 
-Decorate a class with `@property()`, and then you get utilities for transformation between
-class instance and plain JS object.
+Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
+You can control its behavior by using annotations.
+Inspired by [class-transformer](https://github.com/typestack/class-transformer)
 
-## Simple example
+クラスインスタンスとJSのオブジェクトの変換を容易にします。
+TypeScriptのプロジェクトのために開発されました。
+アノテーションを利用して挙動をコントロールすることができます。
+
+
+## Quick examples
 
 ```typescript
 class MyEntity {
