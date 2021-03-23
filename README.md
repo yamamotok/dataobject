@@ -1,6 +1,9 @@
 dataobject
 ------------
 
+[![codecov](https://codecov.io/gh/yamamotok/dataobject/branch/develop/graph/badge.svg?token=F7O9X2PWOJ)](https://codecov.io/gh/yamamotok/dataobject)
+[![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
+
 Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
 You can control its behavior by using annotations.
 Inspired by [class-transformer](https://github.com/typestack/class-transformer)
