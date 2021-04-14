@@ -1,5 +1,6 @@
 import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
 import { ToPlain } from './ToPlain';
+import { Middleware } from './types';
 
 import { context, createFactory, createToPlain, property, spread } from './index';
 
@@ -107,6 +108,14 @@ describe('ToPlain', () => {
         expect(obj).toEqual({ name: 'TestWithSpreadContext', hello: 'world', secret: 'secret' });
       }
     });
+
+    it('should apply middlewares', () => {
+      const instance = new TestWithMiddleware();
+      const obj = TestWithMiddleware.toPlain(instance);
+      expect(obj.name).toBe('Test');
+      expect(obj).toHaveProperty('timestamp');
+      expect(obj).toHaveProperty('random');
+    });
   });
 });
 
@@ -159,6 +168,25 @@ class TestWithSpreadContext {
 
   static factory = createFactory(TestWithSpreadContext);
   static toPlain = createToPlain(TestWithSpreadContext);
+}
+
+const addTimestamp: Middleware = (obj) => {
+  return { ...obj, timestamp: Date.now() };
+};
+
+const addRandom: Middleware = (obj) => {
+  return { ...obj, random: Math.random() };
+};
+
+class TestWithMiddleware {
+  @property()
+  readonly name: string = 'Test';
+
+  @property()
+  option?: string;
+
+  static factory = createFactory(Test);
+  static toPlain = createToPlain(Test, { middlewares: [addTimestamp, addRandom] });
 }
 
 class Normal {

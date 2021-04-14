@@ -1,5 +1,5 @@
 import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
-import { ClassWithToPlain, TYPE_ATTRIBUTE_NAME, ToPlainFunction } from './types';
+import { ClassWithToPlain, Middleware, TYPE_ATTRIBUTE_NAME, ToPlainFunction } from './types';
 import { Decorator } from './Decorator';
 import { inContext } from './in-context';
 import { assumeType } from './assume-type';
@@ -35,7 +35,7 @@ export class ToPlain {
    * @param toPlainOptions several options
    */
   static createToPlain<T>(ctor: new () => T, toPlainOptions?: ToPlainOptions): ToPlainFunction<T> {
-    return (obj: T, _context?: string) => {
+    const transform = (obj: T, _context?: string) => {
       const properties = Decorator.getPropertyMap(obj);
       if (!properties) {
         return {};
@@ -68,6 +68,19 @@ export class ToPlain {
       });
       return ret;
     };
+
+    const applyMiddlewares = (plain: Record<string, unknown>): Record<string, unknown> => {
+      if (!toPlainOptions?.middlewares) {
+        return plain;
+      }
+      return toPlainOptions.middlewares.reduce((p, middleware) => {
+        return middleware(p);
+      }, plain);
+    };
+
+    return (obj: T, _context?: string) => {
+      return applyMiddlewares(transform(obj, _context));
+    };
   }
 }
 
@@ -77,4 +90,9 @@ export interface ToPlainOptions {
    * Note: Not-set (undefined) is same as `true`.
    */
   omitUndefined?: boolean;
+
+  /**
+   * Middlewares which are applied transformed object, at the end of transformation.
+   */
+  middlewares?: Middleware[];
 }

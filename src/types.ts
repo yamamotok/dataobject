@@ -11,4 +11,6 @@ export type ClassWithToPlain<T> = NoArgConstructor<T> & { toPlain: ToPlainFuncti
 
 export type DataObjectClass<T> = ClassWithFactory<T> & ClassWithToPlain<T>;
 
+export type Middleware<T = Record<string, unknown>> = (plain: T) => T;
+
 export const TYPE_ATTRIBUTE_NAME = '__type';
