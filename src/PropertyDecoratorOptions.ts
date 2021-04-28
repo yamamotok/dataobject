@@ -1,5 +1,6 @@
 import { TransformerSet } from './TransformerSet';
 import { DataObjectClass } from './types';
+import { Validator } from './Validator';
 
 /**
  * Options given to `@property` decorator.
@@ -34,4 +35,9 @@ export interface PropertyDecoratorOptions {
    * ToPlain function spreads this property value. (value must be an object)
    */
   spread?: { context?: string | string[] };
+
+  /**
+   * Validator function.
+   */
+  validator?: Validator;
 }

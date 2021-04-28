@@ -1,10 +1,10 @@
+import { CustomError } from './CustomError';
+
 /**
  * A custom error thrown in this `dataobject` library.
  */
-export class DataObjectError extends Error {
+export class DataObjectError extends CustomError {
   constructor(message?: string) {
     super(message);
-    const trueProto = new.target.prototype;
-    Object.setPrototypeOf(this, trueProto);
   }
 }

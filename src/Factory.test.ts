@@ -9,6 +9,7 @@ import {
   createToPlain,
   property,
   required,
+  validator,
 } from './index';
 
 describe('Factory', () => {
@@ -121,6 +122,12 @@ describe('Factory', () => {
 
 class Test {
   @property()
+  @validator(
+    (value: string) => {
+      return value.length > 2;
+    },
+    { asString: true }
+  )
   readonly name: string = 'Test';
 
   static factory = createFactory(Test);
