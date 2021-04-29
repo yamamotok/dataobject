@@ -1,6 +1,6 @@
 {
   "name": "@yamamotok/dataobject",
-  "version": "0.3.2",
+  "version": "0.4.1",
   "description": "Data object decorator with marshalling utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,8 +44,8 @@
   "devDependencies": {
     "@types/jest": "^26.0.18",
     "@types/validator": "^13.1.0",
-    "@typescript-eslint/eslint-plugin": "^3.10.1",
-    "@typescript-eslint/parser": "^3.10.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-typescript": "^2.3.0",

@@ -1,17 +1,14 @@
 dataobject
 ------------
 
+[日本語のREADME](./README-Ja.md)
+
 [![codecov](https://codecov.io/gh/yamamotok/dataobject/branch/develop/graph/badge.svg?token=F7O9X2PWOJ)](https://codecov.io/gh/yamamotok/dataobject)
 [![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
 
-Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
-You can control its behavior by using annotations.
+This library provides an easy way for transformation (or serialization/deserialization) between class instance and JavaScript plain object,
+developed for **TypeScript** project. You can control its behavior by using decorators.
 Inspired by [class-transformer](https://github.com/typestack/class-transformer)
-
-クラスインスタンスとJSのオブジェクトの変換を容易にします。
-TypeScriptのプロジェクトのために開発されました。
-アノテーションを利用して挙動をコントロールすることができます。
-
 
 ## Quick examples
 
@@ -60,6 +57,7 @@ const response = MyEntity.toPlain(instance, 'response');
 
 - Transform a class instance to a plain object. (toPlain)
 - Transform a plain object to a class instance. (factory)
+- Validate values of each property.
 
 ## @property, toPlain, factory
 
@@ -67,6 +65,7 @@ A data object class;
 - must have at least one decorated property with `@property`.
 - must have `factory` static method, which can be created by using `createFactory`.
 - must have `toPlain` static method, which can be created by using `createToPlain`.
+- can have `validate` static method, which can be created by using `createValidate`.
 
 The simplest class looks like
 ```typescript
@@ -79,24 +78,22 @@ class Entity {
 }
 ```
 
-You can set the type explicitly.
-
+Please set the type explicitly if the type is not any primitive.
+The type has to be a 'data-object' class which has `factory` implemented in this library way.
 ```typescript
   @property({ type: () => NormalTicket })
   tickets?: NormalTicket;
 ```
 
-Also, multiple types can be set. Please be noted that every type specified has to be a data object.
-
+Also, multiple types (union type) can be set. Every type specified has to be a 'data-object' class.
 ```typescript
   @property({ type: () => [SpecialTicket, NormalTicket] })
   tickets: Tickets[] = [];
 ```
 
-Note: `toPlain` will add a special attribute `__type` to an object in output.
+Note: In process of transformation from union types, `toPlain` will add a special attribute `__type` to an object in output.
 This will be used by `factory` later to assume its original type.
 Output should look like:
-
 ```typescript
 tickets: [
   {
@@ -110,10 +107,10 @@ tickets: [
 ];
 ```
 
-
 ## @required
 
 Mark property as required then factory will check its existence.
+If it was missing, factory will throw Error.
 
 ```typescript
   @property()
@@ -163,6 +160,33 @@ In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 
   secrets?: Record<string, unknown>
 ```
 
+## @validator
+
+Validator function can be added, which is invoked in 'factory'.
+
+Validator function should return `true` or nothing (`undefined`) in case of success. In case of failure,
+it should return false or Error, or should throw Error.
+
+If some validation failed, 'factory' will throw `ValidationError`. 
+You can check what properties failed by checking the error thrown.
+
+```typescript
+class Entity {
+  @property()
+  @validate((v: string) => v.length <= 4)
+  id?: string;
+
+  static factory = createFactory(Entity);
+  static toPlain = createToPlain(Entity);
+}
+try {
+  const entity = Entity.factory({ id: 'a_little_too_long' });
+} catch (err) {
+  // err should be instance of ValidationError
+  // err.causes[0].key should be 'id'
+  // err.causes[0].error should be 'id validation failed'
+}
+```
 
 ## Custom transformation
 
