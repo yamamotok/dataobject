@@ -1,17 +1,14 @@
 dataobject
 ------------
 
+[日本語のREADME](./README-Ja.md)
+
 [![codecov](https://codecov.io/gh/yamamotok/dataobject/branch/develop/graph/badge.svg?token=F7O9X2PWOJ)](https://codecov.io/gh/yamamotok/dataobject)
 [![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
 
-Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
-You can control its behavior by using decorators.
+This library provides an easy way for transformation (or serialization/deserialization) between class instance and JavaScript plain object,
+developed for **TypeScript** project. You can control its behavior by using decorators.
 Inspired by [class-transformer](https://github.com/typestack/class-transformer)
-
-クラスインスタンスとJSのオブジェクトの変換を容易にします。
-TypeScriptのプロジェクトのために開発されました。
-デコレーターを利用して挙動をコントロールすることができます。
-
 
 ## Quick examples
 
@@ -81,24 +78,22 @@ class Entity {
 }
 ```
 
-You can set the type explicitly.
-
+Please set the type explicitly if the type is not any primitive.
+The type has to be a 'data-object' class which has `factory` implemented in this library way.
 ```typescript
   @property({ type: () => NormalTicket })
   tickets?: NormalTicket;
 ```
 
-Also, multiple types can be set. Please be noted that every type specified has to be a data object.
-
+Also, multiple types (union type) can be set. Every type specified has to be a 'data-object' class.
 ```typescript
   @property({ type: () => [SpecialTicket, NormalTicket] })
   tickets: Tickets[] = [];
 ```
 
-Note: `toPlain` will add a special attribute `__type` to an object in output.
+Note: In process of transformation from union types, `toPlain` will add a special attribute `__type` to an object in output.
 This will be used by `factory` later to assume its original type.
 Output should look like:
-
 ```typescript
 tickets: [
   {
@@ -112,10 +107,10 @@ tickets: [
 ];
 ```
 
-
 ## @required
 
 Mark property as required then factory will check its existence.
+If it was missing, factory will throw Error.
 
 ```typescript
   @property()
