@@ -1,4 +1,5 @@
 import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+import { ValidatorFunction, ValidatorOptions } from './Validator';
 
 export class Decorator {
   static readonly PropertiesMetadataKey = Symbol('custom:domainobject-properties');
@@ -52,6 +53,13 @@ export class Decorator {
       }
       const map = Decorator.propertyMap(target);
       map.set(propertyKey, { ...map.get(propertyKey), context: contextNames });
+    };
+  }
+
+  static validator(validator: ValidatorFunction, options?: ValidatorOptions): PropertyDecorator {
+    return (target, propertyKey) => {
+      const map = Decorator.propertyMap(target);
+      map.set(propertyKey, { ...map.get(propertyKey), validator: { validator, options } });
     };
   }
 }

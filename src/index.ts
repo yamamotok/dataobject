@@ -11,6 +11,7 @@ export const property = Decorator.property;
 export const required = Decorator.required;
 export const context = Decorator.context;
 export const spread = Decorator.spread;
+export const validator = Decorator.validator;
 export const createFactory = Factory.createFactory;
 export const createToPlain = ToPlain.createToPlain;
 export { DataObjectError } from './DataObjectError';

@@ -5,12 +5,12 @@ dataobject
 [![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
 
 Easy way for transformation between Class instance and JS plain object, developed for **TypeScript** project.
-You can control its behavior by using annotations.
+You can control its behavior by using decorators.
 Inspired by [class-transformer](https://github.com/typestack/class-transformer)
 
 クラスインスタンスとJSのオブジェクトの変換を容易にします。
 TypeScriptのプロジェクトのために開発されました。
-アノテーションを利用して挙動をコントロールすることができます。
+デコレーターを利用して挙動をコントロールすることができます。
 
 
 ## Quick examples
@@ -60,6 +60,7 @@ const response = MyEntity.toPlain(instance, 'response');
 
 - Transform a class instance to a plain object. (toPlain)
 - Transform a plain object to a class instance. (factory)
+- Validate values of each property.
 
 ## @property, toPlain, factory
 
@@ -67,6 +68,7 @@ A data object class;
 - must have at least one decorated property with `@property`.
 - must have `factory` static method, which can be created by using `createFactory`.
 - must have `toPlain` static method, which can be created by using `createToPlain`.
+- can have `validate` static method, which can be created by using `createValidate`.
 
 The simplest class looks like
 ```typescript
@@ -163,6 +165,33 @@ In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 
   secrets?: Record<string, unknown>
 ```
 
+## @validator
+
+Validator function can be added, which is invoked in 'factory'.
+
+Validator function should return `true` or nothing (`undefined`) in case of success. In case of failure,
+it should return false or Error, or should throw Error.
+
+If some validation failed, 'factory' will throw `ValidationError`. 
+You can check what properties failed by checking the error thrown.
+
+```typescript
+class Entity {
+  @property()
+  @validate((v: string) => v.length <= 4)
+  id?: string;
+
+  static factory = createFactory(Entity);
+  static toPlain = createToPlain(Entity);
+}
+try {
+  const entity = Entity.factory({ id: 'a_little_too_long' });
+} catch (err) {
+  // err should be instance of ValidationError
+  // err.causes[0].key should be 'id'
+  // err.causes[0].error should be 'id validation failed'
+}
+```
 
 ## Custom transformation
 

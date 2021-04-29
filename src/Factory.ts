@@ -5,8 +5,44 @@ import { Decorator } from './Decorator';
 import { DataObjectError } from './DataObjectError';
 import { inContext } from './in-context';
 import { assumeType } from './assume-type';
+import { ValidationError, ValidationErrorCause } from './ValidationError';
 
 export class Factory {
+  /**
+   * Validate each value
+   */
+  static validate(
+    key: string,
+    value: unknown,
+    options?: PropertyDecoratorOptions
+  ): ValidationErrorCause | undefined {
+    const validator = options?.validator?.validator;
+    if (!validator) {
+      return undefined;
+    }
+    const validatorOptions = options?.validator?.options;
+    if (validatorOptions?.asString) {
+      if (value === undefined || value === null) {
+        value = '';
+      } else {
+        value = String(value);
+      }
+    }
+
+    let errorCause: ValidationErrorCause | undefined = undefined;
+    try {
+      const res = validator(value);
+      if (res === false) {
+        errorCause = { key, error: `${key} validation failed` };
+      } else if (res instanceof Error) {
+        errorCause = { key, error: res };
+      }
+    } catch (err) {
+      errorCause = { key, error: err };
+    }
+    return errorCause;
+  }
+
   /**
    * Transform each value.
    */
@@ -50,6 +86,7 @@ export class Factory {
         throw new DataObjectError('Implementation error, no annotated properties');
       }
 
+      const validationErrors: ValidationErrorCause[] = [];
       properties.forEach((options, _key) => {
         const context = _context || 'factory';
         const key = _key as string & keyof T;
@@ -64,8 +101,16 @@ export class Factory {
           // skip, out of context
           return;
         }
-        newObj[key] = Factory.transform(source[key], context, options) as T[string & keyof T];
+        const validationError = Factory.validate(key, source[key], options);
+        if (validationError) {
+          validationErrors.push(validationError);
+        } else {
+          newObj[key] = Factory.transform(source[key], context, options) as T[string & keyof T];
+        }
       });
+      if (validationErrors.length > 0) {
+        throw new ValidationError('Validation failed', validationErrors);
+      }
       return newObj;
     };
   }
