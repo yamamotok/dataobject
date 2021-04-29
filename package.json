@@ -1,6 +1,6 @@
 {
   "name": "@yamamotok/dataobject",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Data object decorator with marshalling utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
