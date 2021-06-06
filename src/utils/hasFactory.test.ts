@@ -9,6 +9,13 @@ describe('hasFactory', () => {
     expect(hasFactory(TimeObject)).toBe(true);
     expect(hasFactory(ExceptionalObject)).toBe(false);
   });
+
+  it.each([[null], ['string']])(
+    'should return false when an irregular %s value was given',
+    (val) => {
+      expect(hasFactory(val)).toBe(false);
+    }
+  );
 });
 
 class ExceptionalObject {

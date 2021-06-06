@@ -23,6 +23,23 @@ describe('PrimitiveStrategy for factory', () => {
     expect(strategy.apply(opts)).toBeUndefined();
   });
 
+  it.each([[Number], [String], [Boolean]])(
+    'should transform undefined to undefined, even if the type is %s',
+    (type) => {
+      const opts: ValueTransformerOptions = {
+        key: 'value',
+        sourceValue: undefined,
+        context: 'factory',
+        options: {
+          typeInfo: type,
+        },
+      };
+      const transformed = strategy.apply(opts);
+      expect(transformed).toBeInstanceOf(Transformed);
+      expect(transformed?.value).toBeUndefined();
+    }
+  );
+
   it.each([
     [123, 123, 'number'],
     ['123', 123, 'numeric string'],
