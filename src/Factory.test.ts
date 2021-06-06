@@ -1,5 +1,4 @@
 import { Factory } from './Factory';
-import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
 import { SourceType } from './types';
 
 import {
@@ -13,63 +12,6 @@ import {
 } from './index';
 
 describe('Factory', () => {
-  const defaultContext = 'factory';
-  const defaultOptions: PropertyDecoratorOptions = {};
-
-  describe('value transformer', () => {
-    it('should transform each value recursively if it is an array', async () => {
-      const test = [1, 2];
-      const spy = jest.spyOn(Factory, 'transform');
-      const result = Factory.transform(test, defaultContext, defaultOptions);
-      expect(spy).toBeCalledTimes(3);
-      expect(spy).toBeCalledWith(test, defaultContext, defaultOptions);
-      expect(spy).toBeCalledWith(1, defaultContext, defaultOptions);
-      expect(spy).toBeCalledWith(2, defaultContext, defaultOptions);
-      expect(result).toEqual(test);
-      expect(result).not.toBe(test);
-    });
-
-    it('should use transformer', async () => {
-      const test = 'hello';
-      const transformer = jest.fn().mockImplementation((value) => value + ' transformed');
-      const result = Factory.transform(test, defaultContext, {
-        transformer: { from: transformer },
-      });
-      expect(result).toBe('hello transformed');
-      expect(transformer).toBeCalledTimes(1);
-      expect(transformer).toBeCalledWith('hello');
-    });
-
-    it('should use transformer, even if the value is undefined', async () => {
-      const test = undefined;
-      const transformer = jest.fn();
-      const result = Factory.transform(test, defaultContext, {
-        transformer: { from: transformer },
-      });
-      expect(result).toBe(undefined);
-      expect(transformer).toBeCalledTimes(1);
-      expect(transformer).toBeCalledWith(undefined);
-    });
-
-    it('should transform value according to "type" options', async () => {
-      const test = { name: 'hello' };
-      const result = Factory.transform(test, defaultContext, { type: () => Test });
-      expect(result).toBeInstanceOf(Test);
-    });
-
-    it('should pass-thru the value if it is an instance of the type specified', async () => {
-      const test = new Test();
-      const result = Factory.transform(test, defaultContext, { type: () => Test });
-      expect(result).toBe(test); // same instance
-    });
-
-    it('should transform primitives according to "typeInfo"', async () => {
-      expect(Factory.transform('', defaultContext, { typeInfo: Number })).toBe(0);
-      expect(Factory.transform('TRUE', defaultContext, { typeInfo: Boolean })).toBe(true);
-      expect(Factory.transform(undefined, defaultContext, { typeInfo: String })).toBeUndefined();
-    });
-  });
-
   describe('created factory', () => {
     it('should be a function', () => {
       expect(typeof Factory.createFactory(Test)).toBe('function');

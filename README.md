@@ -1,73 +1,100 @@
-dataobject
+DataObject
 ------------
-
-[日本語のREADME](./README-Ja.md)
 
 [![codecov](https://codecov.io/gh/yamamotok/dataobject/branch/develop/graph/badge.svg?token=F7O9X2PWOJ)](https://codecov.io/gh/yamamotok/dataobject)
 [![npm version](https://badge.fury.io/js/%40yamamotok%2Fdataobject.svg)](https://badge.fury.io/js/%40yamamotok%2Fdataobject)
 
-This library provides an easy way for transformation (or serialization/deserialization) between class instance and JavaScript plain object,
-developed for **TypeScript** project. You can control its behavior by using decorators.
-Inspired by [class-transformer](https://github.com/typestack/class-transformer)
+## Main features
+
+- Transformation from a Class instance to a plain JavaScript object. (Serialization)
+- Transformation from plain a JavaScript object to a Class instance. (Deserialization)
+- Designed for TypeScript project, using [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html).
+
+## Key concept
+
+- DataObject always takes **whitelist** approach. It means that;
+  + Only `@property` decorated property will be output (serialized) into plain JavaScript object.
+  + Only `@property` decorated property will be taken (deserialized) into class instance.
+
+## Limitation
+
+- Currently, Class inheritance is not supported.
 
 ## Quick examples
 
 ```typescript
-class MyEntity {
+class User {
   @property()
   @required()
-  firstName!: string;
-  
-  @property()
-  @required()
-  lastName!: string;
+  userId!: string;
 
   @property()
-  age?: number;
+  name: string = '';
 
   @property()
-  @context('response')
-  get name() {
-    return this.firstName + ' ' + this.lastName;
-  }
-  
-  static factory = createFactory(MyEntity);
-  static toPlain = createToPlain(MyEntity);
+  postalAddress?: Address;
+
+  @property()
+  @context('factory', 'toPlain')
+  metadata: Record<string, unknown> = {};
+
+  @property()
+  tags: Set<string> = new Set();
+
+  static factory = createFactory(User);
+  static toPlain = createToPlain(User);
 }
 
-// Create an instance from a plain object.
-// For example, transformation from a source object from NoSQL DB.
+class Address {
+  @property()
+  @required()
+  country!: string;
+
+  @property()
+  @required()
+  @context('!public')
+  @validator(isPostalCode)
+  postalCode!: string;
+
+  static factory = createFactory(Address);
+  static toPlain = createToPlain(Address);
+}
+
+function isPostalCode(code: string) {
+  return /^[\d]{7}$/.test(code);
+}
+
 const source = {
-  firstName: 'Taro',
-  lastName: 'Okamoto',
-  age: 45,
+  userId: 'e7cebd38-9e3a-4487-9485-b3e3be03cd32',
+  name: 'test user',
+  postalAddress: {
+    country: 'jp',
+    postalCode: '1234567',
+  },
+  metadata: {
+    lastLogin: 1622940893174,
+  },
+  tags: ['loyal', 'active'],
 };
-const instance = MyEntity.factory(source);
 
-// Create a plain object from an instance.
-const plain = MyEntity.toPlain(instance);
-// { firstName: 'Taro', lastName: 'Okamoto', age: 45 }
+// Transformation from plain object to class instance. (deserialization)
+const created = User.factory(source);
 
-// For example, transform a data object to API response.
-const response = MyEntity.toPlain(instance, 'response');
-// { firstName: 'Taro', lastName: 'Okamoto', age: 45, name: 'Taro Okamoto' }
+// Transformation from class instance to plain object. (serialization)
+const plain = User.toPlain(created, 'public');
 ``` 
 
-## Features
+## Decorators
 
-- Transform a class instance to a plain object. (toPlain)
-- Transform a plain object to a class instance. (factory)
-- Validate values of each property.
+### @property decorator & "toPlain" and "factory" static methods
 
-## @property, toPlain, factory
+To enable a Class to work as "DataObject", you should do first;
+- Implement at least one `@property` decorated property.
+- Implement `factory` static method by using `createFactory` utility.
+- Implement `toPlain` static method by using `createToPlain` utility.
 
-A data object class;
-- must have at least one decorated property with `@property`.
-- must have `factory` static method, which can be created by using `createFactory`.
-- must have `toPlain` static method, which can be created by using `createToPlain`.
-- can have `validate` static method, which can be created by using `createValidate`.
+The simplest class looks like;
 
-The simplest class looks like
 ```typescript
 class Entity {
   @property()
@@ -78,94 +105,200 @@ class Entity {
 }
 ```
 
-Please set the type explicitly if the type is not any primitive.
-The type has to be a 'data-object' class which has `factory` implemented in this library way.
+### Value transformation for each types
+
+DataObject will look up at types given through TypeScript type system for transformation. 
+It is also possible to tell its type explicitly. Also, you can set your own transformer.
+
+
+#### string, number, boolean (primitives)
+
 ```typescript
-  @property({ type: () => NormalTicket })
-  tickets?: NormalTicket;
+@property
+name: string;
+```
+- In toPlain, value will be output as-is.
+- In factory, input value will be type-coerced.
+
+
+```typescript
+@property
+code: number;
+```
+- In toPlain, value will be output as-is.
+- In factory, input value will be type-coerced. If the result is `NaN`, Error will be thrown.
+
+
+```typescript
+@property
+active: boolean;
+```
+- In toPlain, value will be output as-is.
+- In factory, input value will be type-coerced.
+
+#### Custom class
+
+```typescript
+@property
+active: CustomClass; // CustomClass is a "DataObject" which has factory and toPlain static methods.
+```
+- In toPlain, value will be transformed with using `CustomClass#toPlain()`.
+- In factory, value will be transformed with using `CustomClass#factory()`.
+
+#### array and Set
+
+```typescript
+@property
+list: string[];
+```
+- In toPlain, each value in array will be output as-is.
+- In factory, each value in array will be taken as-is. (no type coercion)
+- Other types are same.
+
+```typescript
+@property({ type: () => CustomClass })
+list: CustomClass[];
+```
+- Need to set `type` option to `@property` decorator.
+- In toPlain, each value in array will be transformed with using `CustomClass#toPlain()`.
+  A special attribute `__type: CustomClass` will be added.
+- In factory, each value in array will be transformed with using `CustomClass#factory()`.
+
+```typescript
+@property({ type: () => [CustomClass, AnotherCustomClass] })
+list: Array<CustomClass | AnotherCustomClass>; // Union type also works
+```
+- Need to set `type` option to `@property` decorator.
+- In toPlain, each value in array will be transformed with using `CustomClass#toPlain()` or `AnotherCustomClass#toPlain()`.
+  A special attribute `__type: CustomClass` or `__type: AnotherCustomClass` will be added.
+- In factory, each value in array will be transformed with using `CustomClass#factory()` or `AnotherCustomClass#factory()`
+  according to a special attribute `__type`.
+
+```typescript
+@property()
+list: Set<string>;
+
+@property({ type: () => CustomClass })
+list: Set<CustomClass>;
+```
+- Same as array
+
+#### object and Map
+
+```typescript
+@property
+dict: Record<string, string>;
+```
+- In toPlain, each value in object will be output as-is.
+- In factory, each value in object will be taken as-is. (no type coercion)
+- Other type pairs (e.g. `Record<string, unknown>`) are same.
+
+
+```typescript
+@property{ type: () => CustomClass }
+dict: Map<string, CustomClass>;
+```
+- Need to set `type` options to `@property` decorator.
+- In toPlain, each value in array will be transformed with using `CustomClass#toPlain()`.
+  A special attribute `__type: CustomClass` will be added.
+- In factory, each value in array will be transformed with using `CustomClass#factory()`.
+
+```typescript
+@property{ type: () => CustomClass, isMap: true }
+dict: Record<string, CustomClass>;
+```
+- Need to set `type` and `isMap` options to `@property` decorator if you want to use object like ES6 Map.
+- In toPlain, each value in array will be transformed with using `CustomClass#toPlain()`.
+  A special attribute `__type: CustomClass` will be added.
+- In factory, each value in array will be transformed with using `CustomClass#factory()`.
+
+```typescript
+@property{ type: () => [CustomClass, AnotherCustomClass] }
+dict: Map<string, CustomClass | AnotherCustomClass>;
+```
+- Union type works same as array of union types.
+
+#### undefined
+- If the value given to factory was `undefined`, the value is not taken in.
+
+#### Custom transformation
+
+You can use your own transformer by setting `transformer` option.
+
+```typescript
+  @property({ transformer: jsDateTransformer })
+  timestamp: Date = new Date();
 ```
 
-Also, multiple types (union type) can be set. Every type specified has to be a 'data-object' class.
-```typescript
-  @property({ type: () => [SpecialTicket, NormalTicket] })
-  tickets: Tickets[] = [];
-```
+Please check `src/bundle/jsDateTransformer` for actual transformer implementation, which transformed JavaScript
+`Date` object to ISO date string and vice-versa.
 
-Note: In process of transformation from union types, `toPlain` will add a special attribute `__type` to an object in output.
-This will be used by `factory` later to assume its original type.
-Output should look like:
-```typescript
-tickets: [
-  {
-    name: 'normal ticket name',
-    __type: 'NormalTicket',
-  },
-  {
-    name: 'special ticket name',
-    __type: 'SpecialTicket',
-  },
-];
-```
 
-## @required
+### @required
 
-Mark property as required then factory will check its existence.
-If it was missing, factory will throw Error.
+In case a property has been decorated with `@required`,
+factory will check if the property really exists in given source.
 
 ```typescript
   @property()
   @required()
-  id!: string
+  id!: string;
 ```
+Error will be thrown if it is missing.
 
-## @context
+
+### @context
 
 You can make transformation work only in specific contexts.
 - factory method has "factory" context as default.
 - toPlain method has "toPlain" context as default.
 
 ```typescript
+class Entity {
   @property()
-  @required()
-  @context('response')
-  id!: string
-```
+  @context('!response')
+  id: string;
+  
+  @property('response')
+  get name(): string { ... }
+}
 
-You can specify custom context;
-```
 Entity.toPlain(instance, 'response');
 ```
 
-Negation (heading `!`) is available.
+You can specify custom context to both toPlain and factory. Exclusion (heading `!`) is available.
+With above example, toPlain will output only `name` into resulted object. 
+
+
+### @spread
+
+You can spread the value in `toPlain` process with using `@spread` decorator.
+Also, you can give context option which works same as `@context`.
+
 ```typescript
+class Entity {
   @property()
-  @required()
-  @context('!toPlain', '!response')
-  id!: string
-```
+  id: string = 'my-id'
 
-## @spread
-
-Spread the value in `toPlain` process. If you give context option (like @context), this will work in the context.
-
-In this example, `toPlain(instance)` spreads only `details`, `toPlain(instance, 'inspection')` spreads both `details` and `secrets`.
-
-```typescript
   @property
   @spread
-  details?: Record<string, unknown>
-  
-  @property
-  @spread('inspection')
-  secrets?: Record<string, unknown>
+  details?: Record<string, unknown> = { item: 'value' }
+}
+
+Entity.toPlain(instance);
 ```
 
-## @validator
+With above example, `details` is spread, and the result should look like;
+```typescript
+{ id: "my-id", item: "value" }
+```
 
-Validator function can be added, which is invoked in 'factory'.
+### @validator
 
-Validator function should return `true` or nothing (`undefined`) in case of success. In case of failure,
-it should return false or Error, or should throw Error.
+You can set validator function which is invoked in 'factory'.
+
+Validator function should return `true` or nothing (`undefined`) in case of success.  
+In case of failure, it should return false or Error, or should throw Error.
 
 If some validation failed, 'factory' will throw `ValidationError`. 
 You can check what properties failed by checking the error thrown.
@@ -173,7 +306,7 @@ You can check what properties failed by checking the error thrown.
 ```typescript
 class Entity {
   @property()
-  @validate((v: string) => v.length <= 4)
+  @validator((v: string) => v.length <= 4)
   id?: string;
 
   static factory = createFactory(Entity);
@@ -188,16 +321,9 @@ try {
 }
 ```
 
-## Custom transformation
+Be noted the validator will be applied after value transformation finished, 
+that means the argument validator takes is already transformed value. 
 
-You can implement custom transformer like;
-```typescript
-  @property({ transformer: jsDateTransformer })
-  @required()
-  timestamp!: Date;
-```
-
-Please check `jsDateTransformer` in package for details.
 
 ## License (MIT)
 
