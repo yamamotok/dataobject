@@ -5,6 +5,7 @@ export interface Validator {
 }
 
 export type ValidatorFunction<T = any> = (value: T) => void | boolean | Error;
+export type ValidatorFunctionS = (value: string) => void | boolean | Error;
 
 export interface ValidatorOptions {
   /**

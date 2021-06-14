@@ -22,6 +22,11 @@ export interface PropertyDecoratorOptions {
   type?: () => DataObjectClass<any> | DataObjectClass<any>[]; // eslint-disable-line
 
   /**
+   * Deal with this property as a map.
+   */
+  isMap?: boolean;
+
+  /**
    * A specific context, `@property` will work only in this context.
    */
   context?: string | string[];
