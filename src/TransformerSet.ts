@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
+
 /**
  * A function for value transformation.
  */
-export type ValueTransformer<FROM = any, TO = any> = (value: FROM) => TO; // eslint-disable-line
+export type ValueTransformer<FROM = any, TO = any> = (
+  value: FROM,
+  context?: string,
+  options?: PropertyDecoratorOptions
+) => TO;
 
 /**
  * Set of transformers.
