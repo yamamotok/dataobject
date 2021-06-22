@@ -24,7 +24,6 @@ export class Factory {
         throw new DataObjectError('Implementation error, no decorated properties');
       }
 
-      const validationErrors: ValidationErrorCause[] = [];
       properties.forEach((options, _key) => {
         const context = _context || Factory.DefaultContext;
         const key = _key as string & keyof T;
@@ -35,11 +34,6 @@ export class Factory {
         if (!Object.prototype.hasOwnProperty.call(source, key) || source[key] === undefined) {
           if (options?.required) {
             throw new DataObjectError(`Required property ${key} is missing`);
-          }
-          // Validate the default value
-          const validationError = validate({ key, targetValue: newObj[key], options, context });
-          if (validationError) {
-            validationErrors.push(validationError);
           }
           return;
         }
@@ -56,16 +50,23 @@ export class Factory {
           context,
           options,
         }) as T[string & keyof T];
+        newObj[key] = transformedValue;
+      });
 
-        // Validate transformed value
-        // Note: validation is being applied after transformation.
-        const validationError = validate({ key, targetValue: transformedValue, options, context });
+      // Validation should be applied after the instance was created.
+      const validationErrors: ValidationErrorCause[] = [];
+      properties.forEach((options, _key) => {
+        const context = _context || Factory.DefaultContext;
+        const key = _key as string & keyof T;
+        if (!inContext(context, options?.context)) {
+          return;
+        }
+        const validationError = validate({ key, targetValue: newObj[key], options, context });
         if (validationError) {
           validationErrors.push(validationError);
         }
-
-        newObj[key] = transformedValue;
       });
+
       if (validationErrors.length > 0) {
         throw new ValidationError('Validation failed', validationErrors);
       }
