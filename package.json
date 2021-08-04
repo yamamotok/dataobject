@@ -1,7 +1,7 @@
 {
   "name": "@yamamotok/dataobject",
-  "version": "1.0.1",
-  "description": "Data object decorator with marshalling utilities.",
+  "version": "1.1.0",
+  "description": "Decorator based JSON serializer and deserializer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -30,13 +30,15 @@
     "url": "https://github.com/yamamotok/dataobject"
   },
   "keywords": [
-    "deserialization",
     "json",
-    "marshaller",
-    "object-to-class",
     "serialization",
     "serializer",
+    "deserialization",
+    "deserializer",
     "transformer",
+    "marshaller",
+    "object-to-class",
+    "class-to-object",
     "typescript",
     "typescript-serializer"
   ],

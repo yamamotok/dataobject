@@ -18,7 +18,7 @@ export class CustomTypeStrategy extends Strategy {
 
     const { sourceValue } = opts;
     if (typeof sourceValue !== 'object' || !sourceValue) {
-      throw new DataObjectError(`Source value for ${opts.key} is not an object`);
+      throw new DataObjectError(`Source value for "${opts.key}" is not an object`);
     }
 
     // Source value is an instance of one of given types.

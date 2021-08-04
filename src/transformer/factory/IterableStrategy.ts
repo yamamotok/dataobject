@@ -11,7 +11,7 @@ export class IterableStrategy extends Strategy {
         return new Transformed(new Map(sourceValue));
       }
       if (Array.isArray(sourceValue)) {
-        throw new DataObjectError(`Type of ${key} is Map but array was given`);
+        throw new DataObjectError(`Type of "${key}" is Map but array was given`);
       }
       if (typeof sourceValue === 'object' && sourceValue) {
         const ret = new Map();
@@ -28,7 +28,7 @@ export class IterableStrategy extends Strategy {
         });
         return new Transformed(ret);
       }
-      throw new DataObjectError(`Type of ${key} is Map but Map-unlike value was given`);
+      throw new DataObjectError(`Type of "${key}" is Map but Map-unlike value was given`);
     }
 
     if (options?.typeInfo === Set) {
@@ -49,7 +49,7 @@ export class IterableStrategy extends Strategy {
         );
         return new Transformed(ret);
       }
-      throw new DataObjectError(`Type of ${key} is Set but Set-unlike value was given`);
+      throw new DataObjectError(`Type of "${key}" is Set but Set-unlike value was given`);
     }
 
     if (options?.isMap && typeof sourceValue === 'object' && sourceValue) {

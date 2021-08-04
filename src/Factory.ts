@@ -33,7 +33,7 @@ export class Factory {
         // - `DataObjectError` will be thrown in case no value was given for `required()` decorated property.
         if (!Object.prototype.hasOwnProperty.call(source, key) || source[key] === undefined) {
           if (options?.required) {
-            throw new DataObjectError(`Required property ${key} is missing`);
+            throw new DataObjectError(`Required property "${key}" is missing`);
           }
           return;
         }
