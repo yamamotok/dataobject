@@ -7,7 +7,7 @@ import { PropertyDecoratorOptions } from './PropertyDecoratorOptions';
 export type ValueTransformer<FROM = any, TO = any> = (
   value: FROM,
   context?: string,
-  options?: PropertyDecoratorOptions
+  options?: PropertyDecoratorOptions & { key: string }
 ) => TO;
 
 /**

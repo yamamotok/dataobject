@@ -5,7 +5,9 @@ export class CustomTransformerStrategy extends Strategy {
   protected transform(opts: ValueTransformerOptions): Transformed | undefined {
     const customFunc = opts.options?.transformer?.from;
     if (customFunc) {
-      return new Transformed(customFunc(opts.sourceValue, opts.context, opts.options));
+      return new Transformed(
+        customFunc(opts.sourceValue, opts.context, { ...opts.options, key: opts.key })
+      );
     }
     return undefined;
   }
