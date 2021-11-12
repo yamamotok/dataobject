@@ -1,8 +1,8 @@
 import { TYPE_ATTRIBUTE_NAME } from '../../src/types';
 
-import { MultiTypeChildObject } from './fixtures/MultiTypeChildObject';
 import { ChildObjectA } from './fixtures/ChildObjectA';
 import { ChildObjectB } from './fixtures/ChildObjectB';
+import { MultiTypeChildObject } from './fixtures/MultiTypeChildObject';
 
 describe('assume-type test', () => {
   test('Assume a type', () => {

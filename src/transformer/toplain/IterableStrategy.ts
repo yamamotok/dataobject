@@ -14,7 +14,8 @@ export class IterableStrategy extends Strategy {
 
     if (sourceValue instanceof Map) {
       const ret: Record<string, unknown> = {};
-      sourceValue.forEach((value, key) => {
+      sourceValue.forEach((value, _key) => {
+        const key = String(_key);
         ret[key] = this.recurse({ ...opts, key: opts.key + `.${key}`, sourceValue: value });
       });
       return new Transformed(ret);

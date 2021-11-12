@@ -12,7 +12,7 @@ describe('CustomTransformerStrategy for toPlain', () => {
 
   it('should call custom transformer', () => {
     const customFunc = jest.fn().mockImplementation((value, context, options) => {
-      return 'hi ' + value;
+      return 'hi ' + String(value);
     });
     const transformer: TransformerSet = {
       to: customFunc,

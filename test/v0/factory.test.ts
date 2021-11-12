@@ -1,10 +1,10 @@
 import { DataObjectError } from '../../src';
 
-import { ChildObject } from './fixtures/ChildObject';
-import { TimeObject } from './fixtures/TimeObject';
-import { SimpleDataObject } from './fixtures/SimpleDataObject';
 import { AllOptionalObject } from './fixtures/AllOptionalObject';
+import { ChildObject } from './fixtures/ChildObject';
 import { NoPropertyObject } from './fixtures/NoPropertyObject';
+import { SimpleDataObject } from './fixtures/SimpleDataObject';
+import { TimeObject } from './fixtures/TimeObject';
 
 describe('Test factory function', () => {
   test('Create an instance with using factory', () => {

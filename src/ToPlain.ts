@@ -1,7 +1,7 @@
-import { Decorator } from './Decorator';
-import { inContext } from './utils/inContext';
-import { ToPlainOptions } from './ToPlainOptions';
 import { toPlainValueTransform } from './transformer/toPlainValueTransform';
+import { inContext } from './utils/inContext';
+import { Decorator } from './Decorator';
+import { ToPlainOptions } from './ToPlainOptions';
 import { ToPlainFunction } from './types';
 
 export class ToPlain {

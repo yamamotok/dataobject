@@ -1,4 +1,4 @@
-import { DataObjectError, createFactory, createToPlain, property } from '../../src';
+import { createFactory, createToPlain, DataObjectError, property } from '../../src';
 
 describe('Map-like object transformation', () => {
   describe('Property typed as ES6 Set', () => {

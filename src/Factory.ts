@@ -1,10 +1,10 @@
 import { factoryValueTransform } from './transformer/factoryValueTransform';
-import { FactoryFunction, SourceType } from './types';
-import { Decorator } from './Decorator';
-import { DataObjectError } from './DataObjectError';
 import { inContext } from './utils/inContext';
-import { ValidationError, ValidationErrorCause } from './ValidationError';
 import { validate } from './validator/validate';
+import { DataObjectError } from './DataObjectError';
+import { Decorator } from './Decorator';
+import { FactoryFunction, SourceType } from './types';
+import { ValidationError, ValidationErrorCause } from './ValidationError';
 
 export class Factory {
   static readonly DefaultContext = 'factory';

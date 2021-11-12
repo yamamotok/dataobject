@@ -37,6 +37,10 @@ module.exports = {
     ],
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-unsafe-return': 'warn',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/unbound-method': 'off',
   },
   settings: {
     'import/resolver': {
@@ -67,4 +71,5 @@ module.exports = {
       },
     },
   ],
+  ignorePatterns: ['.eslintrc.js'],
 };

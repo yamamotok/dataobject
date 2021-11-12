@@ -2,10 +2,10 @@ if (typeof Reflect === 'undefined' || !Reflect.getMetadata) {
   throw new Error(`Please add 'import "reflect-metadata"' to the top of your entry point.`);
 }
 
-import { Decorator } from './Decorator';
-import { ToPlain } from './ToPlain';
-import { Factory } from './Factory';
 import { JsDateTransformer } from './bundle/JsDateTransformer';
+import { Decorator } from './Decorator';
+import { Factory } from './Factory';
+import { ToPlain } from './ToPlain';
 
 export const property = Decorator.property;
 export const required = Decorator.required;
