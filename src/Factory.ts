@@ -1,4 +1,5 @@
 import { factoryValueTransform } from './transformer/factoryValueTransform';
+import { getDescriptor } from './utils/getDescriptor';
 import { inContext } from './utils/inContext';
 import { validate } from './validator/validate';
 import { DataObjectError } from './DataObjectError';
@@ -28,10 +29,16 @@ export class Factory {
         const context = _context || Factory.DefaultContext;
         const key = _key as string & keyof T;
 
+        // Probably the property is just "getter".
+        const newObjDescriptor = getDescriptor(newObj, key);
+        if (newObjDescriptor && !newObjDescriptor.writable && !newObjDescriptor.set) {
+          return;
+        }
+
         // Check if the given value to factory should be processed.
         // - It will be ignored if the value is `undefined`.
         // - `DataObjectError` will be thrown in case no value was given for `required()` decorated property.
-        if (!Object.prototype.hasOwnProperty.call(source, key) || source[key] === undefined) {
+        if (source[key] === undefined) {
           if (options?.required) {
             throw new DataObjectError(`Required property "${key}" is missing`);
           }
