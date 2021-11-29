@@ -8,3 +8,9 @@
 
 # libraries
 /node_modules
+
+# temp
+/temp
+/tmp
+*.tmp
+*.bak

@@ -1,8 +1,8 @@
 import { TYPE_ATTRIBUTE_NAME } from '../../src/types';
 
+import { FlatDataObject } from './fixtures/FlatDataObject';
 import { SimpleDataObject } from './fixtures/SimpleDataObject';
 import { TimeObject } from './fixtures/TimeObject';
-import { FlatDataObject } from './fixtures/FlatDataObject';
 
 describe('Test toPlain function', () => {
   test('Transform simple instance to plain object', () => {

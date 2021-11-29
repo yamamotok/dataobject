@@ -1,11 +1,18 @@
+/* eslint-disable
+   @typescript-eslint/no-unsafe-return,
+   @typescript-eslint/no-unsafe-assignment,
+   @typescript-eslint/no-unsafe-member-access,
+   @typescript-eslint/no-unsafe-argument
+    */
+
 import {
-  DataObjectError,
-  ValidationError,
   context,
   createFactory,
   createToPlain,
+  DataObjectError,
   property,
   required,
+  ValidationError,
   validator,
 } from '../../src';
 

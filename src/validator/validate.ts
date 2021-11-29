@@ -31,7 +31,11 @@ export function validate(opts: ValueValidatorOptions): ValidationErrorCause | un
       errorCause = { key, error: res };
     }
   } catch (err) {
-    errorCause = { key, error: err };
+    if (err instanceof Error || typeof err === 'string') {
+      errorCause = { key, error: err };
+    } else {
+      errorCause = { key, error: 'Unknown error' };
+    }
   }
   return errorCause;
 }

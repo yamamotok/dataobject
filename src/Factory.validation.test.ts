@@ -1,6 +1,5 @@
-import { ValidationError } from './ValidationError';
-
 import { createFactory, createToPlain, property, validator } from './index';
+import { ValidationError } from './ValidationError';
 
 const data: Partial<Test> = {
   id: 123,
@@ -20,16 +19,16 @@ describe('Factory with validation', () => {
       ...data,
       id: -321,
     };
-    let error: ValidationError | undefined = undefined;
+    let error: Error | undefined = undefined;
     try {
       Test.factory(obj);
     } catch (err) {
-      error = err;
+      error = err instanceof Error ? err : undefined;
     }
     expect(error).toBeInstanceOf(ValidationError);
-    expect(error?.causes.length).toBe(1);
-    expect(error?.causes?.[0].key).toBe('id');
-    expect(error?.causes?.[0].error).toBe('id validation failed');
+    expect((error as ValidationError).causes.length).toBe(1);
+    expect((error as ValidationError).causes?.[0].key).toBe('id');
+    expect((error as ValidationError).causes?.[0].error).toBe('id validation failed');
   });
 
   it('should validate number, with implicit type conversion', () => {
@@ -45,17 +44,19 @@ describe('Factory with validation', () => {
       ...data,
       name: 'a',
     };
-    let error: ValidationError | undefined = undefined;
+    let error: Error | undefined = undefined;
     try {
       Test.factory(obj);
     } catch (err) {
-      error = err;
+      error = err instanceof Error ? err : undefined;
     }
     expect(error).toBeInstanceOf(ValidationError);
-    expect(error?.causes.length).toBe(1);
-    expect(error?.causes?.[0].key).toBe('name');
-    expect(error?.causes?.[0].error).toBeInstanceOf(Error);
-    expect((error?.causes?.[0].error as Error).message).toBe('Too short or long!');
+    expect((error as ValidationError).causes.length).toBe(1);
+    expect((error as ValidationError).causes?.[0].key).toBe('name');
+    expect((error as ValidationError).causes?.[0].error).toBeInstanceOf(Error);
+    expect(((error as ValidationError).causes?.[0].error as Error).message).toBe(
+      'Too short or long!'
+    );
   });
 
   it('should validate number, with asString option', () => {
@@ -70,17 +71,17 @@ describe('Factory with validation', () => {
       ...data,
       mark: 'undefined',
     };
-    let error: ValidationError | undefined = undefined;
+    let error: Error | undefined = undefined;
     try {
       Test.factory(obj);
     } catch (err) {
-      error = err;
+      error = err instanceof Error ? err : undefined;
     }
     expect(error).toBeInstanceOf(ValidationError);
-    expect(error?.causes.length).toBe(1);
-    expect(error?.causes?.[0].key).toBe('mark');
-    expect(error?.causes?.[0].error).toBeInstanceOf(Error);
-    expect((error?.causes?.[0].error as Error).message).toBe('Unknown mark');
+    expect((error as ValidationError).causes.length).toBe(1);
+    expect((error as ValidationError).causes?.[0].key).toBe('mark');
+    expect((error as ValidationError).causes?.[0].error).toBeInstanceOf(Error);
+    expect(((error as ValidationError).causes?.[0].error as Error).message).toBe('Unknown mark');
   });
 });
 
@@ -99,7 +100,7 @@ function checkMark(s: string) {
 }
 
 function checkNumeric(s: string) {
-  return !s.match(/[^0-9]/);
+  return !/[^0-9]/.exec(s);
 }
 
 function checkEmpty(s: string) {

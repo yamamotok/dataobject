@@ -26,13 +26,13 @@ describe('Work with accessors', () => {
     expect(instance.titled).toBe('Sakamoto san');
   });
 
-  it('should work with getter, misconfiguration causes error', () => {
+  it('should work with getter, getter should be ignored in process of factory', () => {
     expect(() => {
       AccessorObject.factory({
         name: 'Sakamoto',
         juniorTitled: 'Sakamoto kun',
       });
-    }).toThrowError(TypeError);
+    }).not.toThrowError(TypeError);
   });
 });
 
@@ -55,7 +55,8 @@ class AccessorObject {
   }
 
   /**
-   * Misconfiguration, this should have `@context('!factory')`.
+   * As of version 1.2.0, setting `@context('!factory')` to getter is not required.
+   * Until version 1.1.x, this was misconfiguration and should have had `@context('!factory')`.
    */
   @property()
   get juniorTitled(): string {
