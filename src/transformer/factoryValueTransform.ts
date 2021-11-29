@@ -1,8 +1,8 @@
-import { Strategy, Transformed } from './Strategy';
 import { CustomTransformerStrategy } from './factory/CustomTransformerStrategy';
 import { CustomTypeStrategy } from './factory/CustomTypeStrategy';
 import { IterableStrategy } from './factory/IterableStrategy';
 import { PrimitiveStrategy } from './factory/PrimitiveStrategy';
+import { Strategy, Transformed } from './Strategy';
 import { ValueTransformerOptions } from './ValueTransformerOptions';
 
 export function factoryValueTransform(opts: ValueTransformerOptions): unknown {

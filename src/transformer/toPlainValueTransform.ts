@@ -1,8 +1,8 @@
-import { Strategy, Transformed } from './Strategy';
 import { ClassStrategy } from './toplain/ClassStrategy';
 import { CustomTransformerStrategy } from './toplain/CustomTransformerStrategy';
 import { IterableStrategy } from './toplain/IterableStrategy';
 import { PrimitiveStrategy } from './toplain/PrimitiveStrategy';
+import { Strategy, Transformed } from './Strategy';
 import { ValueTransformerOptions } from './ValueTransformerOptions';
 
 export function toPlainValueTransform(opts: ValueTransformerOptions): unknown {

@@ -1,10 +1,9 @@
-import { ToPlain } from './ToPlain';
-
 import { context, createFactory, createToPlain, property, spread } from './index';
+import { ToPlain } from './ToPlain';
 
 describe('ToPlain', () => {
   describe('created toPlain function', () => {
-    it('should be a function', async () => {
+    it('should be a function', () => {
       expect(typeof ToPlain.createToPlain(Test)).toBe('function');
     });
 

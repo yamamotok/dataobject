@@ -1,15 +1,14 @@
 import { Factory } from './Factory';
-import { SourceType } from './types';
-
 import {
-  DataObjectError,
   context,
   createFactory,
   createToPlain,
+  DataObjectError,
   property,
   required,
   validator,
 } from './index';
+import { SourceType } from './types';
 
 describe('Factory', () => {
   describe('created factory', () => {

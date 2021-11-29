@@ -1,12 +1,12 @@
 import {
-  ValidationError,
-  ValidatorFunction,
-  ValidatorFunctionS,
   createFactory,
   createToPlain,
   property,
   required,
+  ValidationError,
   validator,
+  ValidatorFunction,
+  ValidatorFunctionS,
   validatorS,
 } from '../../src';
 
@@ -41,7 +41,7 @@ const anyValidator: ValidatorFunction<string> = (v) => {
 };
 
 const stringValidator: ValidatorFunctionS = (str) => {
-  return !str.match(/9/);
+  return !/9/.exec(str);
 };
 
 class ValidationTest {
