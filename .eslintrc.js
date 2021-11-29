@@ -71,5 +71,5 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'package*.json'],
 };
