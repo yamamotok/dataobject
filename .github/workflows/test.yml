@@ -28,4 +28,4 @@ jobs:
         with:
           token: ''
           fail_ci_if_error: true
-          verbose: true
+          verbose: false
